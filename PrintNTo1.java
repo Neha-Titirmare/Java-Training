@@ -1,0 +1,21 @@
+public class PrintNTo1 {
+
+    static void printNumbers(int n) {
+
+        // Base 
+        if (n == 0) {
+            return;
+        }
+
+        
+        System.out.print(n + " ");
+
+        
+        printNumbers(n - 1);
+    }
+
+    public static void main(String[] args) {
+        int n = 5;
+        printNumbers(n);
+    }
+}
