@@ -1,0 +1,208 @@
+
+mysql> CREATE DATABASE bookshelf;
+Query OK, 1 row affected (0.04 sec)
+
+mysql> USE bookshelf;
+Database changed
+mysql> CREATE TABLE books (
+    ->     id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     title VARCHAR(255) NOT NULL,
+    ->     author VARCHAR(255) NOT NULL,
+    ->     genre VARCHAR(100),
+    ->     page_count INT,
+    ->     status ENUM('To Read', 'Reading', 'Finished') DEFAULT 'To Read'
+    -> );
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> INSERT INTO books (title, author, genre, page_count, status) VALUES
+    -> ('The Alchemist', 'Paulo Coelho', 'Fiction', 208, 'Finished'),
+    -> ('Atomic Habits', 'James Clear', 'Self-Help', 320, 'Finished'),
+    -> ('Dune', 'Frank Herbert', 'Sci-Fi', 688, 'Reading'),
+    -> ('1984', 'George Orwell', 'Dystopian', 328, 'Finished'),
+    -> ('Deep Work', 'Cal Newport', 'Self-Help', 296, 'To Read'),
+    -> ('The Hobbit', 'J.R.R. Tolkien', 'Fantasy', 310, 'Reading'),
+    -> ('Clean Code', 'Robert C. Martin', 'Technology', 431, 'To Read'),
+    -> ('Sapiens', 'Yuval Noah Harari', 'History', 443, 'Finished'),
+    -> ('Ikigai', 'Héctor García', 'Self-Help', 208, 'To Read'),
+    -> ('The Great Gatsby', 'F. Scott Fitzgerald', 'Classic', 180, 'To Read');
+Query OK, 10 rows affected (0.05 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM books;
++----+------------------+---------------------+------------+------------+----------+
+| id | title            | author              | genre      | page_count | status   |
++----+------------------+---------------------+------------+------------+----------+
+|  1 | The Alchemist    | Paulo Coelho        | Fiction    |        208 | Finished |
+|  2 | Atomic Habits    | James Clear         | Self-Help  |        320 | Finished |
+|  3 | Dune             | Frank Herbert       | Sci-Fi     |        688 | Reading  |
+|  4 | 1984             | George Orwell       | Dystopian  |        328 | Finished |
+|  5 | Deep Work        | Cal Newport         | Self-Help  |        296 | To Read  |
+|  6 | The Hobbit       | J.R.R. Tolkien      | Fantasy    |        310 | Reading  |
+|  7 | Clean Code       | Robert C. Martin    | Technology |        431 | To Read  |
+|  8 | Sapiens          | Yuval Noah Harari   | History    |        443 | Finished |
+|  9 | Ikigai           | Héctor García       | Self-Help  |        208 | To Read  |
+| 10 | The Great Gatsby | F. Scott Fitzgerald | Classic    |        180 | To Read  |
++----+------------------+---------------------+------------+------------+----------+
+10 rows in set (0.00 sec)
+
+mysql> INSERT INTO books (title, author, genre, page_count, status)
+    -> VALUES ('Your Book Title', 'Author Name', 'Genre', 350, 'To Read');
+Query OK, 1 row affected (0.03 sec)
+
+mysql> SELECT * FROM books WHERE author = 'James Clear';
++----+---------------+-------------+-----------+------------+----------+
+| id | title         | author      | genre     | page_count | status   |
++----+---------------+-------------+-----------+------------+----------+
+|  2 | Atomic Habits | James Clear | Self-Help |        320 | Finished |
++----+---------------+-------------+-----------+------------+----------+
+1 row in set (0.00 sec)
+
+mysql> SELECT * FROM books WHERE author = 'James Clear';
++----+---------------+-------------+-----------+------------+----------+
+| id | title         | author      | genre     | page_count | status   |
++----+---------------+-------------+-----------+------------+----------+
+|  2 | Atomic Habits | James Clear | Self-Help |        320 | Finished |
++----+---------------+-------------+-----------+------------+----------+
+1 row in set (0.00 sec)
+
+mysql> SELECT * FROM books WHERE genre = 'Self-Help';
++----+---------------+---------------+-----------+------------+----------+
+| id | title         | author        | genre     | page_count | status   |
++----+---------------+---------------+-----------+------------+----------+
+|  2 | Atomic Habits | James Clear   | Self-Help |        320 | Finished |
+|  5 | Deep Work     | Cal Newport   | Self-Help |        296 | To Read  |
+|  9 | Ikigai        | Héctor García | Self-Help |        208 | To Read  |
++----+---------------+---------------+-----------+------------+----------+
+3 rows in set (0.00 sec)
+
+mysql> UPDATE books SET status = 'Finished' WHERE title = 'Dune';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> DELETE FROM books WHERE title = 'Ikigai';
+Query OK, 1 row affected (0.02 sec)
+
+mysql> DROP TABLE books;
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> CREATE TABLE authors (
+    ->     author_id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     author_name VARCHAR(255) NOT NULL,
+    ->     country VARCHAR(100)
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> CREATE TABLE authors (
+    ->     author_id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     author_name VARCHAR(255) NOT NULL,
+    ->     country VARCHAR(100)
+    -> );
+ERROR 1050 (42S01): Table 'authors' already exists
+mysql> CREATE TABLE books (
+    ->     id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     title VARCHAR(255) NOT NULL,
+    ->     author_id INT,
+    ->     genre VARCHAR(100),
+    ->     page_count INT,
+    ->     status ENUM('To Read', 'Reading', 'Finished') DEFAULT 'To Read',
+    ->     FOREIGN KEY (author_id) REFERENCES authors(author_id)
+    -> );
+Query OK, 0 rows affected (0.10 sec)
+
+mysql> INSERT INTO authors (author_name, country) VALUES
+    -> ('Paulo Coelho', 'Brazil'),
+    -> ('James Clear', 'USA'),
+    -> ('Frank Herbert', 'USA'),
+    -> ('George Orwell', 'UK'),
+    -> ('Cal Newport', 'USA'),
+    -> ('J.R.R. Tolkien', 'UK'),
+    -> ('Robert C. Martin', 'USA'),
+    -> ('Yuval Noah Harari', 'Israel'),
+    -> ('Héctor García', 'Spain'),
+    -> ('F. Scott Fitzgerald', 'USA');
+Query OK, 10 rows affected (0.01 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> INSERT INTO books (title, author_id, genre, page_count, status) VALUES
+    -> ('The Alchemist', 1, 'Fiction', 208, 'Finished'),
+    -> ('Atomic Habits', 2, 'Self-Help', 320, 'Finished'),
+    -> ('Dune', 3, 'Sci-Fi', 688, 'Reading'),
+    -> ('1984', 4, 'Dystopian', 328, 'Finished'),
+    -> ('Deep Work', 5, 'Self-Help', 296, 'To Read'),
+    -> ('The Hobbit', 6, 'Fantasy', 310, 'Reading'),
+    -> ('Clean Code', 7, 'Technology', 431, 'To Read'),
+    -> ('Sapiens', 8, 'History', 443, 'Finished'),
+    -> ('Ikigai', 9, 'Self-Help', 208, 'To Read'),
+    -> ('The Great Gatsby', 10, 'Classic', 180, 'To Read');
+Query OK, 10 rows affected (0.04 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> SELECT books.id, books.title, authors.author_name, authors.country, books.genre, books.page_count, books.status
+    -> FROM books
+    -> INNER JOIN authors ON books.author_id = authors.author_id;
++----+------------------+---------------------+---------+------------+------------+----------+
+| id | title            | author_name         | country | genre      | page_count | status   |
++----+------------------+---------------------+---------+------------+------------+----------+
+|  1 | The Alchemist    | Paulo Coelho        | Brazil  | Fiction    |        208 | Finished |
+|  2 | Atomic Habits    | James Clear         | USA     | Self-Help  |        320 | Finished |
+|  3 | Dune             | Frank Herbert       | USA     | Sci-Fi     |        688 | Reading  |
+|  4 | 1984             | George Orwell       | UK      | Dystopian  |        328 | Finished |
+|  5 | Deep Work        | Cal Newport         | USA     | Self-Help  |        296 | To Read  |
+|  6 | The Hobbit       | J.R.R. Tolkien      | UK      | Fantasy    |        310 | Reading  |
+|  7 | Clean Code       | Robert C. Martin    | USA     | Technology |        431 | To Read  |
+|  8 | Sapiens          | Yuval Noah Harari   | Israel  | History    |        443 | Finished |
+|  9 | Ikigai           | Héctor García       | Spain   | Self-Help  |        208 | To Read  |
+| 10 | The Great Gatsby | F. Scott Fitzgerald | USA     | Classic    |        180 | To Read  |
++----+------------------+---------------------+---------+------------+------------+----------+
+10 rows in set (0.00 sec)
+
+mysql> SELECT books.title, authors.author_name, authors.country, books.status
+    -> FROM books
+    -> INNER JOIN authors ON books.author_id = authors.author_id
+    -> WHERE books.genre = 'Self-Help';
++---------------+---------------+---------+----------+
+| title         | author_name   | country | status   |
++---------------+---------------+---------+----------+
+| Atomic Habits | James Clear   | USA     | Finished |
+| Deep Work     | Cal Newport   | USA     | To Read  |
+| Ikigai        | Héctor García | Spain   | To Read  |
++---------------+---------------+---------+----------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT books.title, authors.author_name, books.genre, books.status
+    -> FROM books
+    -> INNER JOIN authors ON books.author_id = authors.author_id
+    -> WHERE authors.country = 'UK';
++------------+----------------+-----------+----------+
+| title      | author_name    | genre     | status   |
++------------+----------------+-----------+----------+
+| 1984       | George Orwell  | Dystopian | Finished |
+| The Hobbit | J.R.R. Tolkien | Fantasy   | Reading  |
++------------+----------------+-----------+----------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT books.title, authors.author_name, books.genre
+    -> FROM books
+    -> INNER JOIN authors ON books.author_id = authors.author_id
+    -> WHERE books.status = 'Finished';
++---------------+-------------------+-----------+
+| title         | author_name       | genre     |
++---------------+-------------------+-----------+
+| The Alchemist | Paulo Coelho      | Fiction   |
+| Atomic Habits | James Clear       | Self-Help |
+| 1984          | George Orwell     | Dystopian |
+| Sapiens       | Yuval Noah Harari | History   |
++---------------+-------------------+-----------+
+4 rows in set (0.00 sec)
+
+mysql> UPDATE books SET status = 'Finished'
+    -> WHERE author_id = (SELECT author_id FROM authors WHERE author_name = 'Frank Herbert');
+Query OK, 1 row affected (0.02 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> DELETE FROM books
+    -> WHERE author_id = (SELECT author_id FROM authors WHERE author_name = 'Héctor García');
+Query OK, 1 row affected (0.03 sec)
+
+mysql>
